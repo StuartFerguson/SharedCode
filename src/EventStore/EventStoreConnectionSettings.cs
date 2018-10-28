@@ -69,6 +69,14 @@ namespace Shared.EventStore
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStoreConnectionSettings"/> class.
         /// </summary>
+        public EventStoreConnectionSettings()
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStoreConnectionSettings"/> class.
+        /// </summary>
         /// <param name="connectionString">The connection string.</param>
         /// <param name="connectionName">Name of the connection.</param>
         /// <param name="httpPort">The HTTP port.</param>

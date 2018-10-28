@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI.Projections;
 using EventStore.ClientAPI.SystemData;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Shared.General;
 using ESLogger = EventStore.ClientAPI;
 
 namespace Shared.EventStore
@@ -23,7 +27,7 @@ namespace Shared.EventStore
         /// <summary>
         /// The serializer
         /// </summary>
-        private readonly ISerialiser Serialiser;
+        //private readonly ISerialiser Serialiser;
 
         /// <summary>
         /// The logger
@@ -39,11 +43,6 @@ namespace Shared.EventStore
         /// The event store logger
         /// </summary>
         private readonly ESLogger.ILogger EventStoreLogger;
-
-        /// <summary>
-        /// The file reader
-        /// </summary>
-        private readonly IFileReader FileReader;
 
         #endregion
 
@@ -82,13 +81,11 @@ namespace Shared.EventStore
         /// Initializes a new instance of the <see cref="EventStoreProjectionManager"/> class.
         /// </summary>
         public EventStoreProjectionManager(ILoggerFactory loggerFactory, IOptions<EventStoreConnectionSettings> eventStoreConnectionSettings, 
-                                           ESLogger.ILogger eventStoreLogger, ISerialiser serialiser, IFileReader fileReader)
+                                           ESLogger.ILogger eventStoreLogger)
         {
             // Perform initial validation on input parameters  
             Guard.ThrowIfNull(loggerFactory, nameof(loggerFactory));
             Guard.ThrowIfNull(eventStoreLogger, nameof(eventStoreLogger));
-            Guard.ThrowIfNull(serialiser, nameof(serialiser));
-            Guard.ThrowIfNull(fileReader, nameof(fileReader));
 
             ValidateConnectionDetails(eventStoreConnectionSettings);
 
@@ -97,15 +94,13 @@ namespace Shared.EventStore
             EventStoreConnectionSettings = eventStoreConnectionSettings.Value;
 
             this.Logger.LogDebug(new EventId(), "Event Store Connection Settings");
-            this.Logger.LogDebug(new EventId(), $"IP Address [{this.EventStoreConnectionSettings.IPAddress}]");
+            this.Logger.LogDebug(new EventId(), $"IP Address [{this.EventStoreConnectionSettings.IpAddress}]");
             this.Logger.LogDebug(new EventId(), $"TCP Port [{this.EventStoreConnectionSettings.TcpPort}]");
             this.Logger.LogDebug(new EventId(), $"HTTP Port [{this.EventStoreConnectionSettings.HttpPort}]");
             this.Logger.LogDebug(new EventId(), $"User Name [{this.EventStoreConnectionSettings.UserName}]");
             this.Logger.LogDebug(new EventId(), $"Password [{this.EventStoreConnectionSettings.Password}]");
 
             this.EventStoreLogger = eventStoreLogger;
-            this.Serialiser = serialiser;
-            this.FileReader = fileReader;
 
             // Craete the Projection manager
             CreateProjectionManager();
@@ -135,7 +130,7 @@ namespace Shared.EventStore
             var state = await this.ProjectionManager.GetStateAsync(projectionName);
 
             // Now build the result from the state returned
-            result = this.Serialiser.Deserialise<T>(state);
+            result = JsonConvert.DeserializeObject<T>(state);
 
             return result;
         }
@@ -171,7 +166,7 @@ namespace Shared.EventStore
             {
                 // Get the status if the query and keep doing so until its complete
                 String json = await this.ProjectionManager.GetStatusAsync(queryName, null);
-                QueryStatus queryStatus = this.Serialiser.Deserialise<QueryStatus>(json);
+                QueryStatus queryStatus = JsonConvert.DeserializeObject<QueryStatus>(json);
 
                 // Break out if the query has completed.
                 if (queryStatus.Status.StartsWith("Complete", StringComparison.OrdinalIgnoreCase))
@@ -251,7 +246,7 @@ namespace Shared.EventStore
             var state = await this.ProjectionManager.GetPartitionStateAsync(projectionName, partitionId);
 
             // Now build the result from the state returned
-            result = this.Serialiser.Deserialise<T>(state);
+            result = JsonConvert.DeserializeObject<T>(state);
 
             return result;
         }
@@ -271,7 +266,7 @@ namespace Shared.EventStore
         {
             Guard.ThrowIfNull(eventStoreConnectionSettings, typeof(ArgumentNullException),"Event Store connection details could not be found.");
             Guard.ThrowIfNull(eventStoreConnectionSettings.Value, typeof(ArgumentNullException),"Event Store connection values could not be found.");
-            Guard.ThrowIfNullOrEmpty(eventStoreConnectionSettings.Value.IPAddress, typeof(ArgumentNullException),"Event Store IP Address is invalid.");
+            Guard.ThrowIfNullOrEmpty(eventStoreConnectionSettings.Value.IpAddress, typeof(ArgumentNullException),"Event Store IP Address is invalid.");
             Guard.ThrowIfNegative(eventStoreConnectionSettings.Value.HttpPort, typeof(ArgumentNullException),"Event Store HttpPort cannot be negative.");
             Guard.ThrowIfZero(eventStoreConnectionSettings.Value.HttpPort, typeof(ArgumentNullException),"Event Store HttpPort cannot be zero.");
             Guard.ThrowIfNullOrEmpty(eventStoreConnectionSettings.Value.ConnectionName, typeof(ArgumentNullException),"Event Store Connection name is invalid.");
@@ -289,7 +284,7 @@ namespace Shared.EventStore
         private void CreateProjectionManager()
         {
             // Set up the Http Endpoint
-            IPEndPoint esEndPoint = new IPEndPoint(IPAddress.Parse(EventStoreConnectionSettings.IPAddress),EventStoreConnectionSettings.HttpPort);
+            IPEndPoint esEndPoint = new IPEndPoint(IPAddress.Parse(EventStoreConnectionSettings.IpAddress),EventStoreConnectionSettings.HttpPort);
 
             // Create the projection manager
             this.ProjectionManager = new ProjectionsManager(this.EventStoreLogger, esEndPoint, new TimeSpan(TimeoutHours, TimeoutMins, TimeoutSeconds));
@@ -311,12 +306,25 @@ namespace Shared.EventStore
             List<String> errorMessage = new List<String>();
 
             // Read the file contents
-            String queryContents = await this.FileReader.ReadContentsOfFile(fullFilePath, cancellationToken);
+            String queryContents = String.Empty;
+
+            // Check the file exists
+            if (!File.Exists(fullFilePath))
+            {
+                throw new FileNotFoundException("File not found", fullFilePath);
+            }
+
+            // Read the contents of the file 
+            FileStream fileStream = new FileStream(fullFilePath, FileMode.Open);
+            using (StreamReader sr = new StreamReader(fileStream, Encoding.ASCII))
+            {
+                queryContents = await sr.ReadToEndAsync();
+            }
 
             // Check the contents
             if (String.IsNullOrEmpty(queryContents))
             {
-                throw new NotFoundException($"Query file [{fullFilePath}] was read successfully but had no contents");
+                throw new NotFoundException($"Query file [{fullFilePath}] was read successfully but had no content");
             }
 
             // Return the contents
