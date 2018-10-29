@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Shared.EventStore
 {
-    public interface IProjectionManager
+    /*public interface IProjectionManager
     {
         /// <summary>
         /// Gets the state.
@@ -46,5 +46,5 @@ namespace Shared.EventStore
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task<T> GetPartitionState<T>(String projectionName, String partitionId, CancellationToken cancellationToken);
-    }
+    }*/
 }

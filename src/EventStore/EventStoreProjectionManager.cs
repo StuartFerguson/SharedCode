@@ -15,7 +15,7 @@ using ESLogger = EventStore.ClientAPI;
 
 namespace Shared.EventStore
 {
-    public class EventStoreProjectionManager : IProjectionManager
+    /*public class EventStoreProjectionManager : IProjectionManager
     {
         #region Private Properties
 
@@ -333,5 +333,5 @@ namespace Shared.EventStore
         #endregion
 
         #endregion
-    }
+    }*/
 }

@@ -12,7 +12,7 @@ namespace Shared.EventStore
         /// <value>
         /// The connection string.
         /// </value>
-        public String ConnectionString { get; private set; }
+        public String ConnectionString { get; set; }
 
         /// <summary>
         /// Gets or sets the ip address.
@@ -20,7 +20,7 @@ namespace Shared.EventStore
         /// <value>
         /// The ip address.
         /// </value>
-        public String IpAddress { get; private set; }
+        public String IpAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the tcp port.
@@ -28,7 +28,7 @@ namespace Shared.EventStore
         /// <value>
         /// The tcp port.
         /// </value>
-        public Int32 TcpPort { get; private set; }
+        public Int32 TcpPort { get; set; }
 
         /// <summary>
         /// Gets or sets the HTTP port.
@@ -36,7 +36,7 @@ namespace Shared.EventStore
         /// <value>
         /// The HTTP port.
         /// </value>
-        public Int32 HttpPort { get; private set; }
+        public Int32 HttpPort { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the connection.
@@ -44,7 +44,7 @@ namespace Shared.EventStore
         /// <value>
         /// The name of the connection.
         /// </value>
-        public String ConnectionName { get; private set; }
+        public String ConnectionName { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the user.
@@ -52,7 +52,7 @@ namespace Shared.EventStore
         /// <value>
         /// The name of the user.
         /// </value>
-        public String UserName { get; private set; }
+        public String UserName { get; set; }
 
         /// <summary>
         /// Gets or sets the password.
@@ -60,7 +60,7 @@ namespace Shared.EventStore
         /// <value>
         /// The password.
         /// </value>
-        public String Password { get; private set; }
+        public String Password { get; set; }
 
         #endregion
 
