@@ -270,7 +270,7 @@ namespace Shared.EventStore
             do
             {
                 // TODO: Max events might be configurable.
-                response = await connection.ReadStreamEventsForwardAsync(streamName, fromVersion, 10, false, this.UserCredentials);
+                response = await connection.ReadStreamEventsForwardAsync(streamName, fromVersion, 10, true, this.UserCredentials);
 
                 if (response.NextEventNumber > 0)
                 {
