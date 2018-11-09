@@ -98,7 +98,7 @@ namespace Shared.General
         {
             ValidateLoggerObject();
 
-            LoggerObject.LogError(new EventId(), exception, null);
+            LoggerObject.LogError(new EventId(), exception, exception.Message);
         }
         #endregion
 
@@ -111,7 +111,7 @@ namespace Shared.General
         {
             ValidateLoggerObject();
 
-            LoggerObject.LogCritical(new EventId(), exception, null);
+            LoggerObject.LogCritical(new EventId(), exception, exception.Message);
         }
         #endregion
 
