@@ -64,6 +64,19 @@ namespace Shared.General
         }
         #endregion
 
+        #region public static String GetValue(String sectionName, String keyName)        
+        /// <summary>
+        /// Gets the value.
+        /// </summary>
+        /// <param name="sectionName">Name of the section.</param>
+        /// <param name="keyName">Name of the key.</param>
+        /// <returns></returns>
+        public static String GetValue(String sectionName, String keyName)
+        {
+            return ConfigurationReader.GetValueFromSection(sectionName, keyName);
+        }
+        #endregion
+
         #region public static void Initialise(IConfigurationRoot configurationRoot)        
         /// <summary>
         /// Initialises the specified configuration root.
