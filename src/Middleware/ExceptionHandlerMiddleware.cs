@@ -108,7 +108,4 @@ namespace Shared.Middleware
 
         #endregion
     }
-
-    
-
 }
