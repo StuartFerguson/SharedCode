@@ -19,5 +19,27 @@ namespace Shared.Extensions
             applicationBuilder.UseMiddleware<ExceptionHandlerMiddleware>();
         }
         #endregion
+
+        #region public static void AddRequestLogging(this IApplicationBuilder applicationBuilder)        
+        /// <summary>
+        /// Adds the request logging.
+        /// </summary>
+        /// <param name="applicationBuilder">The application builder.</param>
+        public static void AddRequestLogging(this IApplicationBuilder applicationBuilder)
+        {
+            applicationBuilder.UseMiddleware<RequestLoggingMiddleware>();
+        }
+        #endregion
+
+        #region public static void AddResponseLogging(this IApplicationBuilder applicationBuilder)        
+        /// <summary>
+        /// Adds the response logging.
+        /// </summary>
+        /// <param name="applicationBuilder">The application builder.</param>
+        public static void AddResponseLogging(this IApplicationBuilder applicationBuilder)
+        {
+            applicationBuilder.UseMiddleware<RequestLoggingMiddleware>();
+        }
+        #endregion
     }
 }
