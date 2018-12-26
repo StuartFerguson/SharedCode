@@ -38,7 +38,7 @@ namespace Shared.Extensions
         /// <param name="applicationBuilder">The application builder.</param>
         public static void AddResponseLogging(this IApplicationBuilder applicationBuilder)
         {
-            applicationBuilder.UseMiddleware<RequestLoggingMiddleware>();
+            applicationBuilder.UseMiddleware<ResponseLoggingMiddleware>();
         }
         #endregion
     }
