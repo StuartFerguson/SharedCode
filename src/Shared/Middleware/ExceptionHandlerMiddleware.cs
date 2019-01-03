@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Newtonsoft.Json;
 using Shared.EventStore;
+using Shared.Exceptions;
 using Shared.General;
 
 namespace Shared.Middleware

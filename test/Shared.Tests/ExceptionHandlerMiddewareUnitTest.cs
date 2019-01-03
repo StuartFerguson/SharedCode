@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using Shared.EventStore;
+using Shared.Exceptions;
 using Shared.General;
 using Shared.Middleware;
 using Shouldly;

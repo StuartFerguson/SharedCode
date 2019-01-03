@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shared.EventStore
+namespace Shared.Exceptions
 {
     public class NotFoundException : Exception
     {
