@@ -10,6 +10,20 @@ namespace ClientProxyBase
     public abstract class ClientProxyBase
     {
         /// <summary>
+        /// The HTTP client
+        /// </summary>
+        protected readonly HttpClient HttpClient;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientProxyBase"/> class.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client.</param>
+        public ClientProxyBase(HttpClient httpClient)
+        {
+            this.HttpClient = httpClient;
+        }
+
+        /// <summary>
         /// Handles the response.
         /// </summary>
         /// <param name="responseMessage">The response message.</param>
