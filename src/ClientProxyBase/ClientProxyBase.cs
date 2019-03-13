@@ -1,18 +1,29 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace ClientProxyBase
+﻿namespace ClientProxyBase
 {
+    using System;
+    using System.IO;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public abstract class ClientProxyBase
     {
+        #region Fields
+
         /// <summary>
         /// The HTTP client
         /// </summary>
         protected readonly HttpClient HttpClient;
+
+        /// <summary>
+        /// The last HTTP response message
+        /// </summary>
+        internal HttpResponseMessage LastHttpResponseMessage;
+
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientProxyBase"/> class.
@@ -22,6 +33,10 @@ namespace ClientProxyBase
         {
             this.HttpClient = httpClient;
         }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Handles the response.
@@ -40,9 +55,13 @@ namespace ClientProxyBase
         /// <exception cref="Exception">An internal error has occurred
         /// or
         /// An internal error has occurred</exception>
-        protected virtual async Task<String> HandleResponse(HttpResponseMessage responseMessage, CancellationToken cancellationToken)
+        protected virtual async Task<String> HandleResponse(HttpResponseMessage responseMessage,
+                                                            CancellationToken cancellationToken)
         {
             String result = String.Empty;
+
+            // Cache the response message
+            this.LastHttpResponseMessage = responseMessage;
 
             // Read the content from the response
             String content = await responseMessage.Content.ReadAsStringAsync();
@@ -51,9 +70,9 @@ namespace ClientProxyBase
             if (!responseMessage.IsSuccessStatusCode)
             {
                 // throw a specific  exception to inherited class
-                switch (responseMessage.StatusCode)
-                {                                         
-                    case HttpStatusCode.BadRequest:                        
+                switch(responseMessage.StatusCode)
+                {
+                    case HttpStatusCode.BadRequest:
                         throw new InvalidOperationException(content);
                     case HttpStatusCode.Unauthorized:
                     case HttpStatusCode.Forbidden:
@@ -72,5 +91,7 @@ namespace ClientProxyBase
 
             return result;
         }
+
+        #endregion
     }
 }
