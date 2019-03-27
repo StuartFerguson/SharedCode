@@ -24,14 +24,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new ArgumentNullException("TestParam",ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new ArgumentNullException("TestParam",ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.BadRequest);
             responseData.ShouldNotBeNull();
@@ -43,14 +43,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new InvalidDataException(ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new InvalidDataException(ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.BadRequest);
             responseData.ShouldNotBeNull();
@@ -62,14 +62,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new InvalidOperationException(ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new InvalidOperationException(ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.BadRequest);
             responseData.ShouldNotBeNull();
@@ -81,14 +81,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new FormatException(ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new FormatException(ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.BadRequest);
             responseData.ShouldNotBeNull();
@@ -100,14 +100,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new NotSupportedException(ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new NotSupportedException(ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.BadRequest);
             responseData.ShouldNotBeNull();
@@ -119,14 +119,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new NotFoundException(ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new NotFoundException(ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.NotFound);
             responseData.ShouldNotBeNull();
@@ -138,14 +138,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new NotImplementedException(ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new NotImplementedException(ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.NotImplemented);
             responseData.ShouldNotBeNull();
@@ -157,14 +157,14 @@ namespace Shared.Tests
         {
             Logger.Initialise(NullLogger.Instance);
             
-            var middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
-                throw new Exception(ExceptionMessage));
+            ExceptionHandlerMiddleware middleware = new ExceptionHandlerMiddleware((innerHttpContext) =>
+                throw new Exception(ExceptionHandlerMiddewareUnitTest.ExceptionMessage));
 
-            var context = CreateContext();
+            DefaultHttpContext context = ExceptionHandlerMiddewareUnitTest.CreateContext();
 
             await middleware.Invoke(context);
 
-            var responseData = GetErrorResponse(context);
+            ErrorResponse responseData = ExceptionHandlerMiddewareUnitTest.GetErrorResponse(context);
 
             context.Response.StatusCode.ShouldBe((Int32) HttpStatusCode.InternalServerError);
             responseData.ShouldNotBeNull();
@@ -174,15 +174,15 @@ namespace Shared.Tests
         private static ErrorResponse GetErrorResponse(DefaultHttpContext context)
         {
             context.Response.Body.Seek(0, SeekOrigin.Begin);
-            var reader = new StreamReader(context.Response.Body);
-            var streamText = reader.ReadToEnd();
-            var responseData = JsonConvert.DeserializeObject<ErrorResponse>(streamText);
+            StreamReader reader = new StreamReader(context.Response.Body);
+            String streamText = reader.ReadToEnd();
+            ErrorResponse responseData = JsonConvert.DeserializeObject<ErrorResponse>(streamText);
             return responseData;
         }
 
         private static DefaultHttpContext CreateContext()
         {
-            var context = new DefaultHttpContext();
+            DefaultHttpContext context = new DefaultHttpContext();
             context.Request.Scheme = "http";
             context.Request.Host = new HostString("localhost");
             context.Request.Path = new PathString("/test");

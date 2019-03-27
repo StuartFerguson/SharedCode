@@ -14,7 +14,7 @@ namespace Logging.Tests
         [Fact]
         public void Logger_Initialise_IsInitialised()
         {
-            ILogger logger = Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+            ILogger logger = NullLogger.Instance;
             Logger.Initialise(logger);
 
             Logger.IsInitialised.ShouldBeTrue();
