@@ -1,6 +1,7 @@
 ﻿namespace ClientProxyBase
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
     using System.Net.Http;
@@ -78,7 +79,7 @@
                     case HttpStatusCode.Forbidden:
                         throw new UnauthorizedAccessException(content);
                     case HttpStatusCode.NotFound:
-                        throw new InvalidDataException(content);
+                        throw new KeyNotFoundException(content);
                     case HttpStatusCode.InternalServerError:
                         throw new Exception("An internal error has occurred");
                     default:
